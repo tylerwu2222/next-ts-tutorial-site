@@ -1,0 +1,17 @@
+.navBarContainer {
+    float: left;
+    position: sticky;
+    z-index: 2;
+    top: 10px;
+    left: 20px;
+    width: 20vw;
+}
+
+.navBarLinkContainer {
+    padding: 10px;
+}
+
+.navBarLinkContainerActive {
+    color: var(--mantine-color-blue-9);
+    font-weight: 700;
+}

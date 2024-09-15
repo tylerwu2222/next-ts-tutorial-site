@@ -1,0 +1,77 @@
+import NextImageStatic from '@/app/components/Images/NextImageStatic'
+import NextImageDynamic from '@/app/components/Images/NextImageDynamic'
+import DefaultImg from '@/app/components/Images/DefaultImg'
+import RefreshPageButton from '@/app/components/Buttons/RefreshPageButton/RefreshPageButton'
+
+### Images
+Images in NextJS are a bit different from your typical `<img>` tag. 
+A Next.js `<Image>` includes a bit of built-in optimization. 
+Here is a short list of the things `<Image>` automatically does for you, directly from <a href="https://nextjs.org/learn/dashboard-app/optimizing-fonts-images" target='_blank'><b>Learn Next.js</b></a>
+
+- Ensure your image is responsive on different screen sizes.
+- Specify image sizes for different devices.
+- Prevent layout shift as the images load.
+- Lazy load images that are outside the user's viewport.
+
+However, after browsing some reddit threads on the use of `<img>` vs `<Image>`. 
+I've found that for most of my use cases, the `<img>` tag with `loading=lazy` may suffice.
+
+
+Here is a static image, (imported directly from public folder of the site): 
+
+and a refresh button just for fun <RefreshPageButton/> 
+(If you look closely, you'll notice that the Next `<Image>` preallocates the space, so there isn't any "layout shifting" as with the default `<img>` tag)
+
+loaded using `<Image>`:
+<NextImageStatic/>
+
+vs. lazy loaded with `<img>`:
+<DefaultImg/>
+
+and here is the code for both:
+
+**Next `<Image/>`**
+```
+import React from 'react'
+import Image from 'next/image'
+import pikachu from '../../../../public/images/pikachu_wizard.png';
+
+interface NextImageStaticProps {
+    altname: string
+}
+
+export default function NextImageStatic({
+    altname = 'pikachu_wizard.png'
+}: Partial<NextImageStaticProps>) {
+    return (
+        <Image
+            src={pikachu}
+            alt={altname}
+            width={200}
+        >
+        </Image>
+    )
+}
+```
+
+
+**default `<img/>`**
+```
+interface DefaultImageProps {
+    filename: string
+}
+
+export default function DefaultImg({
+    filename = 'pikachu_wizard.png'
+}: Partial<DefaultImageProps>) {
+    return (
+        <img
+            src={`/images/${filename}`}
+            alt={filename}
+            width={200}
+            loading='lazy'
+        >
+        </img>
+    )
+}
+```

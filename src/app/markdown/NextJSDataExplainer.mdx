@@ -1,0 +1,97 @@
+import TodosServerSide from '@/app/components/Todos/TodosServerSide'
+import TodosClientSide from '@/app/components/Todos/TodosClientSide'
+import RefreshPageButton from '@/app/components/Buttons/RefreshPageButton/RefreshPageButton'
+
+### Fetching Data from a remote API
+Fetching data in NextJS is a bit different from React. 
+Typically with React, I've used useEffect() with an async function with fetch to get data from an API.
+
+However, with Next, we can do this in a *server-side* component (remember components in Next are server side by default). 
+
+For example, the following component is a Server Component that fetches dummy todo data from MockAPI **without** a client-side useEffect.
+
+<TodosServerSide/>
+
+This data is fully fetched from the server, and included in the page, fully loaded, before being sent to the client.
+This is known as [static rendering](#static-vs-dynamic-rendering).
+
+On the other hand, this component below is rendered on the client-side:
+
+(You'll notice if you <RefreshPageButton/> this page, the server-side component's data looks like it does not change (since it's loaded before the page),
+whereas the data in the client-side component has a delay since it's fetching the data on page load, rather than before.)
+
+<TodosClientSide/>
+
+
+Here is the code for both components:
+
+**Server side:**
+```
+export default async function TodosServerSide() {
+  const todosResponse = await fetch('https://66e366cd494df9a478e51d2e.mockapi.io/api/todos', { cache: "force-cache" });
+  const todosData = await todosResponse.json()
+
+  // this will log in the server (VS code) console
+  console.log('todos json', todosData.length, todosData[0]);
+
+  return (
+    <div className={styles.todosContainer}>
+      <b>Todos (server-side):</b>
+      {todosData.map((todo:TodoType) => {
+        return (
+          <div>
+            <p>{todo.title}</p>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+```
+
+**Client Side:**
+```
+export default function TodosClientSide() {
+    const [todos, setTodos] = useState([]);
+
+    useEffect(() => {
+        const fetchTodos = async () => {
+            const todosResponse = await fetch('https://66e366cd494df9a478e51d2e.mockapi.io/api/todos', { cache: "force-cache" });
+            const todosData = await todosResponse.json()
+            setTodos(todosData);
+        };
+        fetchTodos();
+    }, []);
+
+    // this will log in the client console
+    console.log('todos json', todos.length, todos[0]);
+
+    return (
+        <div className={styles.todosContainer}>
+            <b>Todos (client-side):</b>
+            {todos.map((todo: TodoType) => {
+                return (
+                    <div>
+                        <p>{todo.title}</p>
+                    </div>
+                )
+            })}
+        </div>
+    )
+}
+```
+
+## Deciding between static and dynamic rendering
+**static rendering:** uses caching to serve "static" content to user. 
+This makes the site faster, reduces server load, and helps with SEO.
+
+Should be used when:
+    - there is no *shared* data between users. 
+    - it's important to have the most 'live' version of the data
+    - if users are constantly interacting with the same data, dynamic rendering may be the better choice
+
+**dynamic rendering:** renders on the server each time the user makes a request (page is loaded, user refreshes the page).
+
+Should be used when:
+    - helps with keeping data up-to-date
+    - if data needs to interact with info from request-time (cookies & url search params)

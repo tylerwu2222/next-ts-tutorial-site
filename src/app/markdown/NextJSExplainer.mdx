@@ -1,0 +1,37 @@
+# NextJS
+React is an extension of JS, and NextJS is an extension of React.
+
+When I first tried out Next.JS, I had little idea about what its benefits were.
+
+All I knew was it had a page router (old version)/app router (new version). Which was pretty nifty I guess.
+
+I thought this was pretty cool already, but let list out more of the benefits I've foudn after reading some of Next.js' docs.
+
+## All the cool things
+
+### **file-based routing**
+This is what the page/app router enables. 
+Rather than having to explicitly connect each page within your website, 
+just create folders and file structure that correspond to sections + pages of your site.
+
+### **code-splitting and pre-fetching**
+I first heard of this concept when learning about this startup replo. 
+    - the idea is: most websites preload all your code for your site, so if one page fails, so does the whole thing.
+    What Next does instead is only load the current page and "pre-fetches" pages linked within the current page (it does this based on your `<Link>` tags).
+        - this ensures navigating to those pages is still fast, while not loading more code than needed.
+
+### **server-side rendering (SSR)**
+    - honestly, I was pretty confused at what the significance of this was when I first learned about it -- probably because my idea of what a server vs client should be responsible for was still somewhat vague
+    - essentially, the benefit of rendering content on the server first is it saves time having to load it on the client --> your user doesn't have to load the content themselves
+    - SSR is most beneficial for static sites, but not always the right choice. When you render things on the server... you render things on the server, so that can be more costly for the server too.
+        - and with dynamic content, the site may load slower
+
+## Core use cases
+### Fetching Data
+Here's a <a href={'/learning/next-js/data'}><b>demo page</b></a> demonstrating the difference between server-side and client-side data fetching.
+
+and a <a href={'/learning/next-js/data/prisma'}><b>demo page</b></a> demonstrating fetching data from a local database (with prisma).
+
+
+### **Images**
+Here's a <a href={'/learning/next-js/images'}><b>demo page</b></a> comparing Next's `<Image>` tag with the vanilla `<img>` tag.

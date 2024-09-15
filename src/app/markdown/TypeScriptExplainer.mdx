@@ -1,0 +1,371 @@
+import NextImageDynamic from '@/app/components/Images/NextImageDynamic'
+
+# Typescript
+
+## why?
+Typescript as its name suggests, allows you to add explicit types to your variables.
+
+If you come from Python, you might be wondering, what's the point of manually adding types anyway? 
+Isn't it kind of a waste of time if the language can imply what the type is from the value?
+
+Well, perhaps a not-so-obvious benefit about explicitly typing your variables 
+is that it often becomes easier to identify the source of an error.
+
+For example, suppose I have a function that only works with numbers:
+```
+const acceptsNumbers = (number_prop:number) => {
+    return number_prop + 1;
+};
+```
+
+If I try to pass it a string, you'll notice the following error:
+<NextImageDynamic filename={'typescript_ex1.png'} width={800} height={101}/>
+<NextImageDynamic filename={'typescript_ex1b.png'} width={800} height={190}/>
+
+This is great for identify errors related to type, 
+and saves you from spending that extra trying to trace back to the origin of a pesky type error.
+
+It might not seem like that big of a benefit here, but with more complex types (arrays of objects, nested objects, etc.) 
+this feature is certainly a huge time-saver.
+
+## basic types
+#### primitives
+Typescript has 3 basic (or primitive) types:
+- `number` (any number, no distinction between ints or floats)
+- `string` ('hello i am a string')
+- `boolean` (true|false)
+
+You can include them after the variable name like so: `const var1:number = 3;`
+However, TypeScript can usually implicitly determine the types here.
+
+The TypeScript docs even go as far as to recommend against typing your variables.
+
+While we're at it, here is a list of things that usually don't require typing:
+- variables
+- function return values
+- anonymous function parameters
+
+So at this point you might be wondering, what am I even supposed to type then? (I certainly asked this when I first learned TS).
+
+The most common place I've found is function/component params and React states, which we'll cover later on this page.
+
+#### array types
+The type for an array can be defined:
+- `arrayVariableName: number[]` or `arrayVariableName: Array<number>`
+
+Note: `arrayVariableName:[number]` would not define an array as you might expect, 
+but rather a *tuple* of exactly length 1 that accepts a number in its one slot.
+
+#### object types
+For objects, you  just need to define the type for each of its keys in `{}`, similar to tuples. 
+For example, if we had a point object, holding x and y, two numeric coordinates:
+- `pt: { x: number; y: number }`
+
+#### the any type
+when you're feeling lazy, (or just want to get something to work for the time being), you can give it an `any` type:
+- `veryComplexObj: any`
+
+## putting types together
+#### union types
+when a variable prop can be more than one type (e.g. a `string` or `number`):
+
+```
+function printId(id: number | string) {
+  console.log("Your ID is: " + id);
+}
+```
+
+Here you can call printId with either a number or string. 
+The issue is calling methods -- you can't call string exclusive methods like `.toUppercase()`, 
+without narrowing the type first:
+
+```
+function printId(id: number | string) {
+  if (typeof id === "string") {
+    // In this branch, id is of type 'string'
+    console.log(id.toUpperCase());
+  } else {
+    // Here, id is of type 'number'
+    console.log(id);
+  }
+}
+```
+
+#### types aliases & interface
+A pretty common handy use case is defining our own type (giving an alias to a type/union of types). 
+
+There are two ways to do this in typescript: `type` and `interface`. 
+
+If we wanted to create an alias for our id above for example:
+
+```
+type ID = number | string;
+```
+
+Interfaces on the other hand, are for defining object types: 
+For example, for our earlier point object:
+
+```
+interface Point{
+    x: number;
+    y: number;
+}
+```
+
+`type` can also be used for object types though:
+
+```
+type Point = {
+    x: number;
+    y: number;
+}
+```
+
+So you might be wondering, what's the difference??
+
+The key difference according to docs, is you can modify an existing interface, but cannot for type.
+
+**This works:**
+```
+interface Window {
+  title: string;
+}
+// updating existing Window interface
+interface Window {
+  ts: TypeScriptAPI;
+}
+```
+
+**This doesn't:**
+```
+type Window = {
+  title: string;
+}
+
+type Window = {
+  ts: TypeScriptAPI;
+}
+```
+
+
+You can extend both to create more specific versions of a type though, e.g.:
+
+```
+interface 3DPoint extends Point{
+    z: number;
+}
+```
+
+and
+
+```
+type 3DPoint = Point & { 
+  z: number;
+}
+```
+
+Practically speaking though, here is how I use the two (i.e. quit yer yapping, and give me something useful):
+- interface for function/component props (which we cover in the next section)
+- type for unions of types I use more than once, (e.g.type theme = 'dark'|'light'|'auto')
+
+## function params and component props
+
+#### functions
+**params**
+
+to type functions parameters, simply add the type after each param individually:
+```
+const addNumbers = (param1:number,param2:number) => {
+    return param1 + param2; 
+}
+```
+
+Or, here's a cool hack: you can type the params altogether if you pass them as an object instead:
+```
+type NumbersObject{
+    number1: number,
+    number2: number
+}
+
+const addNumbersFromObject = (numbers:NumbersObject) => {
+    return numbers.number1 + numbers.number2
+};
+```
+
+**return**
+
+to type function returns: add the return value after the closing parentheses of the params, `)`, and before the opening bracket for the body, `{`:
+
+```
+function (params...): number{
+...
+}
+```
+
+but if you remember, as I mentioned earlier, TypeScript actually recommends that you let return types be implicitly defined.
+
+#### components
+Pulled from react's <a href="https://react.dev/learn/typescript" target='_blank'>docs</a>, with some added props, this would be the manual way to do it:
+
+```
+function MyButton({ title, color, size }: { title: string, color: string, size: number }) {
+    // I didn't implement size and color, but you can imagine...
+    return (
+        <button>{title}</button>
+    );
+}
+```
+
+You can of course, also use interfaces, similar to with functions, to define component props, like so:
+```
+interface MyButtonProps{
+    title: string;
+    color: string;
+    size: number;
+}
+
+function MyButton({ title, color, size }: MyButtonProps) {
+    // I didn't implement size and color, but you can imagine...
+    return (
+        <button>{title}</button>
+    );
+}
+```
+
+#### (callback) function types
+Sometimes, you also need to pass a callback function to a component (e.g. a button component that takes an `onClick` fn as a param:).
+This is how you can define that:
+```
+interface MyButtonProps{
+    title: string;
+    color: string;
+    size: number;
+    onClickFn: () => void;
+}
+
+function MyButton({ title, color, size, onClickFn = () => {} }: MyButtonProps) {
+    // I didn't implement size and color, but you can imagine...
+    return (
+        <button>{title}</button>
+    );
+}
+```
+Note, for function type definitons, we need to insert the param names and types within `()`, and return type after `=>`.
+In the case of our click function, we expect no parameters, and no return value, 
+but for another function, say an arithmetic type of function, the type look like:
+
+```
+interFace MyButtonProps{
+...
+mathFn: (n: number) => number;
+...
+}
+```
+
+## states
+#### state definitions
+When we a state variable in JS it looks like this:
+```
+const [enabled, setEnabled] = useState(false);
+```
+
+in TypeScript this turns into
+```
+const [enabled, setEnabled] = useState<boolean>(false);
+```
+
+#### setter functions
+Sometimes, we pass a state and setter pair to a component through it's props and thus need a corresponding type for the pair.
+A recent example I can think of where I did this was creating a 
+search input component that I needed to reuse with different state variables (e.g. home page search vs. sub page search)
+This is the type for setter functions:
+
+```
+import {Dispatch, SetStateAction} from React;
+
+interface SearchInputProps:{
+    ...
+    value: boolean;
+    setValue: Dispatch<SetStateAction<boolean>>;
+    ...
+}
+```
+
+## Promises
+#### Generic types
+Before we jump into the type for promises, we should understand ✨*generic types*✨.
+First let's pose a scenario, remember for union types, we had types that allowed more than one type for a variable?
+Well, what if we had that but, 3, 4, (a very large number)? You might think, ok let's use `any`, 
+but the thing is, that still leaves us open to unwanted behavior.
+
+Additionally, you would still need to define a bunch of "overload" functions, 
+(functions that each handle the different possible types of our complex type).
+
+That's where generic types come in handy. Rather than predefining all possible types, we do this:
+
+```
+interface Box<Type> {
+  contents: Type;
+}
+```
+Type can be replaced by any name not in the default namespace, for example, I commonly see:
+
+```
+interface Box<T> {
+  contents: T;
+}
+```
+
+Then, to use this `Box` type later:
+
+```
+let box: Box<string>;
+```
+
+and we could also define a 'generic' function like so:
+
+```
+function setContents<Type>(box: Box<Type>, newContents: Type) {
+  box.contents = newContents;
+}
+```
+
+You can read more about generic object types <a href="https://www.typescriptlang.org/docs/handbook/2/objects.html#generic-object-types" target="_blank">here</a>
+
+#### Promise
+Now that we understand generic types, the syntax of `Promise<DataType>` probably is pretty intuitive.
+A promise can return any type, so we simply define the type within the brackets `<>`.
+
+If you recall array types earlier, one of the options to define an array was also: `Array<T>`.
+Hopefully the dots are connecting eh?
+
+### miscellaneous handy dandy stuff
+
+#### `?`
+To make a type optional in an interface, simply add a `?` after the variable name like so:
+
+```
+interface User{
+    id: number,
+    name: string,
+    favorite_color?: string
+}
+```
+
+#### Partial
+Sometimes, i.e. in a component/function definition, 
+many props/args are optional and it's kind of annoying to add a `?` after each prop, 
+so something neat you can do is use `Partial<T>` like so:
+
+```
+export default function Component(
+    {prop1,prop2}:Partial<ComponentProps>
+){
+...
+}
+```
+
+#### Required
+
+#### readonly
+
