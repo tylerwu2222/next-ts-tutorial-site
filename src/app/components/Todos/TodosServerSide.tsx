@@ -1,12 +1,12 @@
 import React from 'react'
 import styles from './Todos.module.css';
 
-interface TodoType{
-  createdAt:string,
-  title:string,
-  bug:string,
-  description:string,
-  id:string
+interface TodoType {
+  createdAt: string,
+  title: string,
+  bug: string,
+  description: string,
+  id: string
 }
 
 export default async function TodosServerSide() {
@@ -19,9 +19,9 @@ export default async function TodosServerSide() {
   return (
     <div className={styles.todosContainer}>
       <b>Todos (server-side):</b>
-      {todosData.map((todo:TodoType) => {
+      {todosData.map((todo: TodoType, index: number) => {
         return (
-          <div>
+          <div key={index}>
             <p>{todo.title}</p>
           </div>
         )

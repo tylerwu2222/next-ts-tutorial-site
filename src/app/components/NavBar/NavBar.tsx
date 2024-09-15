@@ -49,8 +49,12 @@ export default function NavBar() {
     return (
         <div className={styles.navBarContainer}>
             <Group gap="sm">
-                {links.map(link => {
-                    return <div className={pathname === link.href ? `${styles.navBarLinkContainer} ${styles.navBarLinkContainerActive}` : styles.navBarLinkContainer}>
+                {links.map((link) => {
+                    return <div
+                        key={link.name}
+                        className={pathname === link.href ? `${styles.navBarLinkContainer} ${styles.navBarLinkContainerActive}` : styles.navBarLinkContainer}
+
+                    >
                         <Link
                             key={link.name}
                             href={link.href}

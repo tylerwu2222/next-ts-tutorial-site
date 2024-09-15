@@ -28,9 +28,9 @@ export default function TodosClientSide() {
     return (
         <div className={styles.todosContainer}>
             <b>Todos (client-side):</b>
-            {todos.map((todo: TodoType) => {
+            {todos.map((todo: TodoType, index: number) => {
                 return (
-                    <div>
+                    <div key={index}>
                         <p>{todo.title}</p>
                     </div>
                 )
