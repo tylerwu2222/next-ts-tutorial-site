@@ -10,15 +10,15 @@ interface TodoType {
 }
 
 export default async function TodosServerSide() {
-  // const todosResponse = await fetch('https://66e366cd494df9a478e51d2e.mockapi.io/api/todos', { cache: "force-cache" });
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-  const todosResponse = await fetch(`${baseUrl}/api/todos`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  }
-  );
+  const todosResponse = await fetch('https://66e366cd494df9a478e51d2e.mockapi.io/api/todos', { cache: "force-cache" });
+  // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  // const todosResponse = await fetch(`${baseUrl}/api/todos`, {
+  //   method: 'GET',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   }
+  // }
+  // );
   const todosData = await todosResponse.json()
 
   // this will log in the server (VS code) console

@@ -52,7 +52,7 @@ export default function HackerNewsUnstyled() {
         <>
             <div className={styles.hackerIDsContainer}>
                 {topStoriesIDs.map(id => {
-                    return <Badge  key={id} color="gray" size="sm">{id}</Badge>
+                    return <Badge key={id} color="gray" size="sm">{id}</Badge>
                 })}
             </div>
             <p>and the corresponding unstyled story content:</p>
