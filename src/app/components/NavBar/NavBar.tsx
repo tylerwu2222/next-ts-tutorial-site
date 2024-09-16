@@ -16,8 +16,6 @@ import styles from './NavBar.module.css'
 export default function NavBar() {
     const pathname = usePathname();
 
-    const [active, setActive] = useState(0);
-
     const router = useRouter()
     // console.log('pathname', pathname)
 
@@ -65,14 +63,9 @@ export default function NavBar() {
                         // href={link.name}
                         key={link.name}
                         leftSection={link.name === 'home' ? <IconHome2 size="1rem" stroke={1.5} /> : null}
-                        // active={index===active}
-                        // active
                         label={link.name}
                         className={pathname === link.href ? `${styles.navBarLinkContainer} ${styles.navBarLinkContainerActive}` : styles.navBarLinkContainer}
-                        onClick={() => {
-                            setActive(index)
-                            router.push(link.href);
-                        }}
+                        onClick={() => router.push(link.href)}
                         variant='filled'
                     />
                 })}

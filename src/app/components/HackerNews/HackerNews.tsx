@@ -74,7 +74,7 @@ export default function HackerNews() {
                     isLoading ?
                         <Skeleton visible={isLoading} height={30} radius={"xl"} mt={10} /> :
                         topStoriesContents.map(story => {
-                            return <HackerNewsStoryCard story={story} />
+                            return <HackerNewsStoryCard key={story.id} story={story} />
                         })
 
                 }

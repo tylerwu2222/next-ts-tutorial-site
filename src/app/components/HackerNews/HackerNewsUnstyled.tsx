@@ -58,7 +58,7 @@ export default function HackerNewsUnstyled() {
             <p>and the corresponding unstyled story content:</p>
             <div className={styles.hackerNewsContainer}>
                 {topStoriesContents.map(story => {
-                    return <HackerNewsStoryCardUnstyled story={story} />
+                    return <HackerNewsStoryCardUnstyled key={story.id} story={story} />
                 })}
             </div>
         </>
