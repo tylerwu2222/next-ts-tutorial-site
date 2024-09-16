@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React from 'react'
 
 // import Link from 'next/link';
 import { IconHome2 } from '@tabler/icons-react';
@@ -60,8 +60,7 @@ export default function NavBar() {
             <Box>
                 {links.map((link, index) => {
                     return <NavLink
-                        // href={link.name}
-                        key={link.name}
+                        key={index}
                         leftSection={link.name === 'home' ? <IconHome2 size="1rem" stroke={1.5} /> : null}
                         label={link.name}
                         className={pathname === link.href ? `${styles.navBarLinkContainer} ${styles.navBarLinkContainerActive}` : styles.navBarLinkContainer}
