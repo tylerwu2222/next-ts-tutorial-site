@@ -1,10 +1,13 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+// import Link from 'next/link';
+import { IconHome2 } from '@tabler/icons-react';
 
-import { Group } from '@mantine/core';
+import { usePathname, useRouter } from 'next/navigation';
+
+import '@mantine/core/styles/NavLink.css';
+import { Box, NavLink } from '@mantine/core';
 
 import { linkType } from '../../types/types';
 
@@ -12,6 +15,10 @@ import styles from './NavBar.module.css'
 
 export default function NavBar() {
     const pathname = usePathname();
+
+    const [active, setActive] = useState(0);
+
+    const router = useRouter()
     // console.log('pathname', pathname)
 
     const links: linkType[] = [
@@ -28,8 +35,16 @@ export default function NavBar() {
             href: '/learning/next-js'
         },
         {
-            name: 'nextjs: loading remote data',
+            name: 'nextjs: server & client-side data fetching',
             href: '/learning/next-js/data'
+        },
+        {
+            name: 'nextjs: API route handlers',
+            href: '/learning/next-js/data/route-handlers'
+        },
+        {
+            name: 'nextjs x prisma',
+            href: '/learning/next-js/data/prisma'
         },
         {
             name: 'nextjs: images',
@@ -38,32 +53,30 @@ export default function NavBar() {
         {
             name: 'mantine: common components',
             href: '/learning/mantine'
-        },
-        {
-            name: 'nextjs x prisma',
-            href: '/learning/next-js/data/prisma'
-        },
+        }
     ]
 
 
     return (
         <div className={styles.navBarContainer}>
-            <Group gap="sm">
-                {links.map((link) => {
-                    return <div
+            <Box>
+                {links.map((link, index) => {
+                    return <NavLink
+                        // href={link.name}
                         key={link.name}
+                        leftSection={link.name === 'home' ? <IconHome2 size="1rem" stroke={1.5} /> : null}
+                        // active={index===active}
+                        // active
+                        label={link.name}
                         className={pathname === link.href ? `${styles.navBarLinkContainer} ${styles.navBarLinkContainerActive}` : styles.navBarLinkContainer}
-
-                    >
-                        <Link
-                            key={link.name}
-                            href={link.href}
-                        >
-                            <p>{link.name}</p>
-                        </Link>
-                    </div>
+                        onClick={() => {
+                            setActive(index)
+                            router.push(link.href);
+                        }}
+                        variant='filled'
+                    />
                 })}
-            </Group>
+            </Box>
         </div>
     )
 }

@@ -366,6 +366,24 @@ export default function Component(
 ```
 
 #### Required
+Basically the opposite of Partial, 
+it will turn all variables in an object type to required as opposed to optional, 
+even if a variable is marked with `?`.
 
 #### readonly
+adding `readonly` in front of a variable will make it not modifiable. e.g.
+```
+interface User{
+  readonly id: number,
+  name: string
+}
+```
 
+this would then be invalid:
+
+```user[id] = 2;```
+
+### in conclusion
+There is a lot more to typescript you could learn. For example, these very challenging 
+<a href="https://github.com/type-challenges/type-challenges?tab=readme-ov-file" target='_blank'><b>type challenges</b></a>, 
+but hopefully this page served as a sufficient intro to get you started.

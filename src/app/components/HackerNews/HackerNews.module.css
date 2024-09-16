@@ -1,0 +1,9 @@
+.hackerNewsContainer{
+   height: 90vh;
+   overflow-y: scroll;
+}
+
+.hackerNewsContainer{
+   border: 1px black solid; 
+   width: 100%;
+}

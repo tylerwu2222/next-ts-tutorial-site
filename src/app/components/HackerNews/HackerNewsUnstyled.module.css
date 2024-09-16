@@ -1,0 +1,10 @@
+.hackerNewsContainer{
+   height: 30vh;
+   overflow-y: scroll;
+}
+
+.hackerNewsContainer,
+.hackerIDsContainer{
+   border: 1px black solid; 
+   width: 80%;
+}

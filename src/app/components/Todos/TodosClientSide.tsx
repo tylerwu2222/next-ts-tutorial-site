@@ -15,15 +15,25 @@ export default function TodosClientSide() {
 
     useEffect(() => {
         const fetchTodos = async () => {
-            const todosResponse = await fetch('https://66e366cd494df9a478e51d2e.mockapi.io/api/todos', { cache: "force-cache" });
-            const todosData = await todosResponse.json()
+            // fetching directly from external API
+            // const todosResponse = await fetch('https://66e366cd494df9a478e51d2e.mockapi.io/api/todos', { cache: "force-cache" });
+            // fetching from Next API routes (an extra loop, but better practice)
+            const todosResponse = await fetch('/api/todos', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+            );
+            const todosData = await todosResponse.json();
+            // const todosData = await todosResponse.json()
             setTodos(todosData);
         };
         fetchTodos();
     }, []);
 
     // this will log in the client console
-    console.log('todos json', todos.length, todos[0]);
+    // console.log('todos json', todos.length, todos[0]);
 
     return (
         <div className={styles.todosContainer}>

@@ -1,0 +1,120 @@
+import DefaultImg from '@/app/components/Images/DefaultImg'
+import HackerNews from '@/app/components/HackerNews/HackerNews.tsx'
+import HackerNewsUnstyled from '@/app/components/HackerNews/HackerNewsUnstyled.tsx'
+
+## API routes
+On this page, I'll walk through working with Next.js' API routes, (I need the practice too).
+
+### An example
+In a past techinical interview, I was asked to render data from this 
+<a href="https://github.com/HackerNews/API" target="_blank"><b>hackernews api</b></a>,
+specifically, displaying the current <a href="https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty" target="_blank"><b>top stories</b></a>. 
+
+During the interview, I was a little bit stumped because this problem required two instances of fetching the data:
+first, I had to fecth all (or some) of the *ids* from the top stories link, then individually fetch top stories by ID with:
+`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty;`
+
+(I also forgot about `use client` and floundered for 10 out of the 20 minutes because nerves, but we don't talk about that.)
+
+Shortly after the interview, I figured it all out, albiet with fetching the data directly from the component, 
+but now I'll redo the problem with a more calm mindset.
+
+#### Setting up the API routes
+Here is how I set up 
+<DefaultImg filename={'routes_directory.png'}/>
+
+The `route.ts` under topstories will return the list of ID's from. 
+Then I use those ID's along with the `route.ts` under `topstories/[id]` to get the individual story data.
+
+Here are the first 5 ids (fetched from our api router):
+<HackerNewsUnstyled/>
+
+the api route handler code for getting the IDs:
+```
+import { NextResponse } from "next/server";
+
+export async function GET() {
+    const res = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      const storyIDs = await res.json()
+      return NextResponse.json(storyIDs)
+}
+
+```
+
+and for getting the content for a specific ID (note the use of `params`):
+
+```
+import { NextResponse } from "next/server";
+
+export async function GET(
+    req: Request,
+    { params }: { params: { id: string } }
+) {
+    const res = await fetch(`https://hacker-news.firebaseio.com/v0/item/${params.id}.json?print=pretty`)
+    const storyContent = await res.json()
+    return NextResponse.json(storyContent)
+
+}
+```
+
+and the `useEffects` used for fetching from the route handler:
+```
+...
+    const [topStoriesIDs, setTopStoriesIDs] = useState<Array<string>>([]);
+    const [topStoriesContents, setTopStoriesContents] = useState<Array<storyType>>([]);
+    useEffect(() => {
+        const getTopStoryIDS = async () => {
+            const res = await fetch('/api/hackernews/topstories',
+                {
+                    method: 'GET'
+                }
+            )
+            const topStoryIDsData = await res.json();
+            setTopStoryIDs(topStoryIDsData);
+        }
+
+        getTopStoryIDS();
+    }, []);
+
+     // get stories when IDs change
+    useEffect(() => {
+        const getTopStoriesContents = async () => {
+
+            const getTopStoryContent = async (id:string) => {
+                const res = await fetch(`/api/hackernews/topstories/${id}`,
+                    {
+                        method: 'GET'
+                    }
+                )
+                const topStoryContentData = await res.json();
+                return topStoryContentData;
+            }
+
+            const topStoriesContentsData = await Promise.all(topStoriesIDs.map(id=>getTopStoryContent(id)));
+            setTopStoriesContents(topStoriesContentsData);
+        };
+
+        getTopStoriesContents();
+    }, [topStoriesIDs]);
+...
+```
+
+#### Adding pagination and styling
+Sometimes, there is a large, large, large, amount of data and you don't want to load all of it when a user opens your site.
+One way to deal with this is loading the first chunk of it, and as the user scrolls or goes to the next page,
+progressively load more data.
+
+To implement pagination and also to elevate the pages out of the 2000's into 2024, I styled with Mantine:
+
+(You can read more about more of my favorite Mantine components <a href='/learning/typescript'><b>here</b></a>).
+
+Here is a component handling that:
+<HackerNews/>
+
+```
+
+```
