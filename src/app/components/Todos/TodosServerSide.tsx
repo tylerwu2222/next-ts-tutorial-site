@@ -22,7 +22,7 @@ export default async function TodosServerSide() {
   const todosData = await todosResponse.json()
 
   // this will log in the server (VS code) console
-  console.log('todos json', todosData.length, todosData[0]);
+  // console.log('todos json', todosData.length, todosData[0]);
 
   return (
     <div className={styles.todosContainer}>
