@@ -19,10 +19,7 @@ export default function TodosClientSide() {
             // const todosResponse = await fetch('https://66e366cd494df9a478e51d2e.mockapi.io/api/todos', { cache: "force-cache" });
             // fetching from Next API routes (an extra loop, but better practice)
             const todosResponse = await fetch('/api/todos', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
+                method: 'GET'
             }
             );
             const todosData = await todosResponse.json();
