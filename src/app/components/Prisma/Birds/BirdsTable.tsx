@@ -1,35 +1,29 @@
-'use client'
-import React, { useEffect, useState } from 'react'
-import { Birds } from '@prisma/client';
-import { Accordion } from '@mantine/core';
-import '@mantine/core/styles/Accordion.css';
+import React from 'react'
+// import { Birds } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import MantineAccordion from '../../Mantine/Accordion/MantineAccordion';
 
+const prisma = new PrismaClient();
 
-export default function BirdsTable() {
-    const [birds, setBirds] = useState<Birds[]>([]);
+export default async function BirdsTable() {
+    // const [birds, setBirds] = useState<Birds[]>([]);
 
-    useEffect(() => {
-        const getBirds = async () => {
-            const res = await fetch('/api/prisma/birds', { method: 'GET' })
-            const birdsData = await res.json();
-            setBirds(birdsData)
-        };
+    // useEffect(() => {
+    //     const getBirds = async () => {
+    //         const res = await fetch('/api/prisma/birds', { method: 'GET' })
+    //         const birdsData = await res.json();
+    //         setBirds(birdsData)
+    //     };
 
-        getBirds();
-    }, []);
+    //     getBirds();
+    // }, []);
+    // const res = await fetch(process.env.URL + '/api/prisma/birds', { method: 'GET' });
+    // const birds = await res.json();
 
+    const birds = await prisma.birds.findMany();
 
-
+    // can't use mantine components as server components directly, need to nest:
     return (
-        <Accordion variant="contained" radius="md" defaultValue="Hooded Oriole">
-            {birds.map(b => {
-                return (
-                    <Accordion.Item key={b.scientificName} value={b.commonName}>
-                        <Accordion.Control icon={'🐦‍⬛'}></Accordion.Control>
-                        <Accordion.Panel>{b.scientificName} - {b.mainColor}</Accordion.Panel>
-                    </Accordion.Item>
-                )
-            })}
-        </Accordion>
+        <MantineAccordion data={birds}/>
     )
 }

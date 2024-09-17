@@ -3,10 +3,8 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-
 export async function GET() {
-    const res = await prisma.birds.findMany();
-    return NextResponse.json(res)
+    const birds = await prisma.birds.findMany();
+    // console.log('birds res', birds);
+    return NextResponse.json(birds, {status: 200})
 }
-
-// hypothetical POST, PUT
